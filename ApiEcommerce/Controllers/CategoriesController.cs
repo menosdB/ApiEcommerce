@@ -41,10 +41,39 @@ namespace ApiEcommerce.Controllers
             var category = _categoryRepository.GetCategory(id);
             if (category == null)
             {
-                return NotFound();
+                return NotFound($"Category with id {id} not found.");
             }
             var categoryDto = _mapper.Map<CategoryDto>(category);
             return Ok(categoryDto);
+        }
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult CreateCategory([FromBody] CreateCategoryDto createCategoryDto)
+        {
+            if (createCategoryDto == null)
+            {
+                return BadRequest(ModelState);
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (_categoryRepository.CategoryExists(createCategoryDto.Name))
+            {
+                ModelState.AddModelError("CustomError", "Category already exists.");
+                return BadRequest(ModelState);
+            }
+            var category = _mapper.Map<Category>(createCategoryDto);
+            if (!_categoryRepository.CreateCategory(category))
+            {
+                ModelState.AddModelError("CustomError", $"Something went wrong while saving the category {category.Name}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
+            }
+            return CreatedAtRoute("GetCategory", new { id = category.Id }, category);
         }
 
     }
