@@ -35,7 +35,7 @@ public class CategoryRepository : ICategoryRepository
         return Save();
     }
 
-    public ICollection<Category> GetAllCategories()
+    public ICollection<Category> GetCategories()
     {
         return _db.Categories.OrderBy(c => c.Name).ToList();
     }
