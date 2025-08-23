@@ -12,11 +12,13 @@ namespace ApiEcommerce.Controllers
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
+
         public CategoriesController(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -31,6 +33,7 @@ namespace ApiEcommerce.Controllers
             }
             return Ok(categoriesDto);
         }
+
         [HttpGet("id:int", Name = "GetCategory")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -46,6 +49,7 @@ namespace ApiEcommerce.Controllers
             var categoryDto = _mapper.Map<CategoryDto>(category);
             return Ok(categoryDto);
         }
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -70,11 +74,15 @@ namespace ApiEcommerce.Controllers
             var category = _mapper.Map<Category>(createCategoryDto);
             if (!_categoryRepository.CreateCategory(category))
             {
-                ModelState.AddModelError("CustomError", $"Something went wrong while saving the category {category.Name}.");
+                ModelState.AddModelError(
+                    "CustomError",
+                    $"Something went wrong while saving the category {category.Name}."
+                );
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
             }
             return CreatedAtRoute("GetCategory", new { id = category.Id }, category);
         }
+
         [HttpPatch("{id:int}", Name = "UpdateCategory")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -104,11 +112,15 @@ namespace ApiEcommerce.Controllers
             category.Id = id;
             if (!_categoryRepository.UpdateCategory(category))
             {
-                ModelState.AddModelError("CustomError", $"Something went wrong while updating the category {category.Name}.");
+                ModelState.AddModelError(
+                    "CustomError",
+                    $"Something went wrong while updating the category {category.Name}."
+                );
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
             }
             return NoContent();
         }
+
         [HttpDelete("{id:int}", Name = "DeleteCategory")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -128,7 +140,10 @@ namespace ApiEcommerce.Controllers
             }
             if (!_categoryRepository.DeleteCategory(category))
             {
-                ModelState.AddModelError("CustomError", $"Something went wrong while deleting the category {category.Name}.");
+                ModelState.AddModelError(
+                    "CustomError",
+                    $"Something went wrong while deleting the category {category.Name}."
+                );
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
             }
             return NoContent();

@@ -42,7 +42,7 @@ public class CategoryRepository : ICategoryRepository
 
     public Category? GetCategory(int id)
     {
-        return _db.Categories.FirstOrDefault(c => c.Id == id) ;
+        return _db.Categories.FirstOrDefault(c => c.Id == id);
     }
 
     public bool Save()
