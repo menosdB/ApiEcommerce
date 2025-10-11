@@ -34,7 +34,7 @@ namespace ApiEcommerce.Controllers
             return Ok(categoriesDto);
         }
 
-        [HttpGet("id:int", Name = "GetCategory")]
+        [HttpGet("{id:int}", Name = "GetCategory")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
