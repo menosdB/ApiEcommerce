@@ -118,7 +118,7 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult SearchProduct(string searchTerm)
+        public IActionResult SearchProducts(string searchTerm)
         {
             var products = _productRepository.SearchProducts(searchTerm);
             if (products.Count == 0)
@@ -128,6 +128,37 @@ namespace ApiEcommerce.Controllers
 
             var productsDto = _mapper.Map<List<ProductDto>>(products);
             return Ok(productsDto);
+        }
+
+        [HttpPatch("buyProduct/{name}/{quantity:int}", Name = "BuyProduct")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult BuyProduct(string name, int quantity)
+        {
+            if (string.IsNullOrWhiteSpace(name) || quantity <= 0)
+            {
+                return BadRequest("Invalid product name or quantity.");
+            }
+
+            var foundProduct = _productRepository.ProductExists(name);
+            if (!foundProduct)
+            {
+                return NotFound($"Product with name '{name}' not found.");
+            }
+
+            if (!_productRepository.BuyProduct(name, quantity))
+            {
+                ModelState.AddModelError(
+                    "CustomError",
+                    "Failed to buy the product {name} or not enough stock."
+                );
+                return BadRequest(ModelState);
+            }
+
+            var units = quantity > 1 ? "units" : "unit";
+            return Ok($"Product bought {quantity} {units} successfully '{name}'.");
         }
     }
 }
