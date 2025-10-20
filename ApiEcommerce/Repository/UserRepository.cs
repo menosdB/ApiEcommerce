@@ -123,7 +123,7 @@ public class UserRepository : IUserRepository
         {
             Username = createUserDto.Username ?? "No username",
             Name = createUserDto.Name,
-            Role = "user",
+            Role = createUserDto.Role,
             Password = encryptedPassword,
         };
 
