@@ -39,7 +39,7 @@ builder
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
             ValidateIssuer = false,
-            ValidateAudience = true,
+            ValidateAudience = false,
         };
     });
 
