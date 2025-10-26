@@ -30,6 +30,7 @@ namespace ApiEcommerce.Controllers.V1
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Obsolete("This endpoint is deprecated and will be removed in a future version.")]
         // [MapToApiVersion("1.0")]
         // [EnableCors(PolicyNames.AllowSpecificOrigin)]
         public IActionResult GetCategories()
