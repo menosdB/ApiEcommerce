@@ -96,6 +96,46 @@ builder.Services.AddSwaggerGen(options =>
             },
         }
     );
+    options.SwaggerDoc(
+        "v1",
+        new OpenApiInfo
+        {
+            Version = "v1",
+            Title = "ApiEcommerce",
+            Description = "Api para gestionar categorías, productos y usuarios",
+            TermsOfService = new Uri("https://example.com/terms"),
+            Contact = new OpenApiContact
+            {
+                Name = "Example Contact",
+                Url = new Uri("https://example.com/contact"),
+            },
+            License = new OpenApiLicense
+            {
+                Name = "Example License",
+                Url = new Uri("https://example.com/license"),
+            },
+        }
+    );
+    options.SwaggerDoc(
+        "v2",
+        new OpenApiInfo
+        {
+            Version = "v2",
+            Title = "ApiEcommerce v2",
+            Description = "Api para gestionar categorías, productos y usuarios",
+            TermsOfService = new Uri("https://example.com/terms"),
+            Contact = new OpenApiContact
+            {
+                Name = "Example Contact",
+                Url = new Uri("https://example.com/contact"),
+            },
+            License = new OpenApiLicense
+            {
+                Name = "Example License",
+                Url = new Uri("https://example.com/license"),
+            },
+        }
+    );
 });
 
 var apiVersioningBuilder = builder.Services.AddApiVersioning(option =>
@@ -103,9 +143,9 @@ var apiVersioningBuilder = builder.Services.AddApiVersioning(option =>
     option.AssumeDefaultVersionWhenUnspecified = true;
     option.DefaultApiVersion = new ApiVersion(1, 0);
     option.ReportApiVersions = true;
-    option.ApiVersionReader = ApiVersionReader.Combine(
-        new QueryStringApiVersionReader("api-version")
-    ); //?api-version
+    // option.ApiVersionReader = ApiVersionReader.Combine(
+    //     new QueryStringApiVersionReader("api-version")
+    // ); //?api-version
 });
 apiVersioningBuilder.AddApiExplorer(option =>
 {
@@ -130,7 +170,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        options.SwaggerEndpoint("/swagger/v2/swagger.json", "v2");
+    });
 }
 
 app.UseHttpsRedirection();
